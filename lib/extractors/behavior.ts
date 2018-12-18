@@ -1,4 +1,4 @@
-export type Extractor = (event?: Event) => object;
+export type Extractor = (event: any) => object; // @TODO
 
 export type Size = {
   readonly width: number;
@@ -17,18 +17,18 @@ export type DeviceOrientation = {
   readonly gamma: number | null;
 };
 
-const getWindowSize: Extractor = (): Size => ({
+const getWindowSize = (): Size => ({
   height: window.document.body.clientHeight,
   width: window.document.body.clientWidth,
 });
 
-const getScrollPosition: Extractor  = (): Position => ({
+const getScrollPosition = (): Position => ({
   x: window.scrollX,
   y: window.scrollY,
 });
 
-export const extractWindowSize: Extractor  = (): Size => getWindowSize();
-export const extractWindowScroll: Extractor  = (): Position => getScrollPosition();
+export const extractWindowSize: Extractor = () => getWindowSize();
+export const extractWindowScroll: Extractor = () => getScrollPosition();
 
 export const extractMousePosition: Extractor = (event: MouseEvent) => {
   const { clientX: x, clientY: y } = event;
