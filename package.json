@@ -5,6 +5,7 @@
  "typings": "build/main.d.ts",
  "scripts": {
   "build": "rollup --config ./rollup.config.js",
+  "lint": "tslint --project tslint.json",
   "test:e2e": "ava ./tests/e2e/**/*.test.ts",
   "test:unit": "ava ./tests/unit/**/*.test.ts",
   "postinstall": "npm run build"
@@ -22,6 +23,7 @@
   "rollup-plugin-typescript2": "^0.18.1",
   "rollup-plugin-uglify": "^6.0.0",
   "ts-node": "^7.0.1",
+  "tslint": "^5.12.0",
   "typescript": "^3.2.2"
  },
  "ava": {
