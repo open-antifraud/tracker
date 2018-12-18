@@ -1,89 +1,95 @@
-import Emitter, { Listener } from '@gauf/emitter'
-import * as Extractor from '@gauf/extractors/behavior'
+import Emitter, { Listener } from "@gauf/emitter";
+import {
+  extractDeviceOrientation,
+  extractMousePosition,
+  Extractor,
+  extractWindowScroll,
+  extractWindowSize,
+} from "@gauf/extractors/behavior";
 
 export type Settings = {
-  metrics?: Array<string>
-}
+  metrics?: string[];
+};
 
 export type MetricSourceListener = {
-  name: string,
   listener: {
-    handler: (event : Event) => void,
-    useCapture?: boolean
-  }
-}
+    handler: (event: Event) => void,
+    useCapture?: boolean,
+  };
+  name: string;
+};
 
-export type MetricSourceListeners = Array <MetricSourceListener>
+export type MetricSourceListeners = MetricSourceListener[];
 
 export type MetricSource = {
-  event: string,
-  extractor?: Function,
-  useCapture?: boolean
-}
+  event: string;
+  extractor?: Extractor;
+  useCapture?: boolean;
+};
 
-export type MetricSources = Array <MetricSource>
+export type MetricSources = MetricSource[];
 
-export const metricSources : MetricSources = [
-  { event: 'keydown', useCapture: true },
-  { event: 'click', extractor: Extractor.extractMousePosition, useCapture: true },
-  { event: 'mousemove', extractor: Extractor.extractMousePosition, useCapture: true },
-  { event: 'dblclick', extractor: Extractor.extractMousePosition, useCapture: true },
-  { event: 'deviceorientation', extractor: Extractor.extractDeviceOrientation },
-  { event: 'scroll', extractor: Extractor.extractWindowScroll },
-  { event: 'rezie', extractor: Extractor.extractWindowSize }
-]
+export const metricSources: MetricSources = [
+  { event: "keydown", useCapture: true },
+  { event: "click", extractor: extractMousePosition, useCapture: true },
+  { event: "mousemove", extractor: extractMousePosition, useCapture: true },
+  { event: "dblclick", extractor: extractMousePosition, useCapture: true },
+  { event: "deviceorientation", extractor: extractDeviceOrientation },
+  { event: "scroll", extractor: extractWindowScroll },
+  { event: "rezie", extractor: extractWindowSize },
+];
 
 export default class MetricBehaviorEmitter extends Emitter {
   protected metricSourceListeners: MetricSourceListeners;
 
   constructor(listener: Listener, settings: Settings = {}) {
-    super(listener, settings)
+    super(listener, settings);
 
     this.metricSourceListeners = settings.metrics && settings.metrics.length
       ? metricSources
-          .filter(metricSource => -1 !== settings.metrics!.indexOf(metricSource.event))
-          .map(source => this.createMetricSourceListener(source))
-      : metricSources.map(source => this.createMetricSourceListener(source))
+          .filter((metricSource) => -1 !== settings.metrics!.indexOf(metricSource.event))
+          .map((source) => this.createMetricSourceListener(source))
+      : metricSources.map((source) => this.createMetricSourceListener(source));
   }
 
-  protected createMetricSourceListener(metricSource: MetricSource) : MetricSourceListener {
-    const { event: name, useCapture, extractor } = metricSource
-
-    return {
-      name: metricSource.event,
-      listener: {
-        useCapture,
-        handler: this.createHandler(name, extractor)
-      }
-    }
-  }
-
-  protected createHandler (name: string, extractor?: Function)  {
-    return (event : Event) : void =>
-      this.emit({
-        name,
-        timestamp: +new Date(),
-        payload: typeof extractor === "function" ? extractor(event) : undefined
-      })
-  }
-
-  public activate() : void {
-    this.metricSourceListeners.forEach(sourceListener => {
+  public activate(): void {
+    this.metricSourceListeners.forEach((sourceListener) => {
       window.addEventListener(
         sourceListener.name,
         sourceListener.listener.handler,
-        sourceListener.listener.useCapture
-      )
-    })
+        sourceListener.listener.useCapture,
+      );
+    });
   }
 
-  public deactivate() : void {
-    this.metricSourceListeners.forEach(sourceListener => {
+  public deactivate(): void {
+    this.metricSourceListeners.forEach((sourceListener) => {
       window.removeEventListener(
         sourceListener.name,
         sourceListener.listener.handler,
-        sourceListener.listener.useCapture
-      )
-    })
+        sourceListener.listener.useCapture,
+      );
+    });
+  }
+
+  protected createMetricSourceListener(metricSource: MetricSource): MetricSourceListener {
+    const { event: name, useCapture, extractor } = metricSource;
+
+    return {
+      listener: {
+        handler: this.createHandler(name, extractor),
+        useCapture,
+      },
+      name: metricSource.event,
+    };
+  }
+
+  protected createHandler(name: string, extractor?: Extractor)  {
+    return (event: Event): void =>
+      this.emit({
+        name,
+        payload: typeof extractor === "function" ? extractor(event) : undefined,
+        timestamp: +new Date(),
+      });
   }
 }

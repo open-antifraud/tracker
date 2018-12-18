@@ -1,7 +1,9 @@
 import { Metrics } from "@gauf/tracker";
 
-export interface SenderInterface {
-  connect(callback: Function) : void;
-  send(metrics: Metrics) : void;
-  disconnect() : void;
-}
+export type Callback = () => void;
+
+export type SenderInterface = {
+  connect(callback: Callback): void;
+  send(metrics: Metrics): void;
+  disconnect(): void;
+};

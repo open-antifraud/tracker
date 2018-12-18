@@ -1,3 +1,3 @@
-import { Metrics } from '@gauf/tracker';
+import { Metrics } from "@gauf/tracker";
 
-export default (metrics : Metrics) : string => JSON.stringify(metrics)
+export default (metrics: Metrics): string => JSON.stringify(metrics);

@@ -1,6 +1,6 @@
-import { Metrics } from '@gauf/tracker'
-import { Packer } from '@gauf/packer';
-import { SenderInterface } from '@gauf/sender';
+import { Packer } from "@gauf/packer";
+import { Callback, SenderInterface } from "@gauf/sender";
+import { Metrics } from "@gauf/tracker";
 
 export default class SenderWebsocket implements SenderInterface {
   protected url: string;
@@ -8,23 +8,23 @@ export default class SenderWebsocket implements SenderInterface {
   protected connection?: WebSocket;
 
   constructor(url: string, packer: Packer) {
-    this.url = url
-    this.packer = packer
+    this.url = url;
+    this.packer = packer;
   }
 
-  connect(callback: Function) {
-    this.connection = new WebSocket(this.url)
-    this.connection.onopen = function(event: Event) : any {
-      callback()
-    }
-    this.connection.onerror = console.log
+  public connect(callback: Callback) {
+    this.connection = new WebSocket(this.url);
+    this.connection.onopen = function(event: Event): any { // tslint:disable-line:only-arrow-functions
+      callback();
+    };
+    this.connection.onerror = console.log; // tslint:disable-line:no-console
   }
-  send(metrics: Metrics) : void {
+  public send(metrics: Metrics): void {
     if (this.connection) {
-      this.connection.send(this.packer(metrics))
+      this.connection.send(this.packer(metrics));
     }
   }
-  disconnect() {
+  public disconnect() {
     if (this.connection) {
       this.connection.close();
     }

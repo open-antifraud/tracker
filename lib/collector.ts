@@ -1,29 +1,30 @@
-import Emitter from '@gauf/emitter'
-import MetricBehaviorEmitter, { Settings as MetricBehaviorEmitterSettings } from '@gauf/emitters/behavior'
-import MetricNavigatorEmitter, { Settings as MetricNavigatorEmitterSettings }  from '@gauf/emitters/navigator'
+import Emitter from "@gauf/emitter";
+import MetricBehaviorEmitter, { Settings as MetricBehaviorEmitterSettings } from "@gauf/emitters/behavior";
+import MetricNavigatorEmitter, { Settings as MetricNavigatorEmitterSettings } from "@gauf/emitters/navigator";
+import { Metric } from "@gauf/tracker";
 
 export type Settings = {
-  behavior?: MetricBehaviorEmitterSettings,
-  navigator?: MetricNavigatorEmitterSettings
-}
+  behavior?: MetricBehaviorEmitterSettings;
+  navigator?: MetricNavigatorEmitterSettings;
+};
 
-export type Listener = Function
+export type Listener = (metric: Metric) => void;
 
 export class Collector {
-  emitters : Array<Emitter>;
+  public emitters: Emitter[];
 
   constructor(listener: Listener, settings: Settings = {}) {
     this.emitters = [
       new MetricNavigatorEmitter(listener, settings.navigator),
-      new MetricBehaviorEmitter(listener, settings.behavior)
-    ]
+      new MetricBehaviorEmitter(listener, settings.behavior),
+    ];
   }
 
-  activate() {
-    this.emitters.forEach(emmiter => emmiter.activate())
+  public activate() {
+    this.emitters.forEach((emmiter) => emmiter.activate());
   }
 
-  deactivate() {
-    this.emitters.forEach(emmiter => emmiter.deactivate())
+  public deactivate() {
+    this.emitters.forEach((emmiter) => emmiter.deactivate());
   }
 }
