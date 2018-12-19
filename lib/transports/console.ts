@@ -1,15 +1,15 @@
 /* tslint:disable:no-console */
 
-import { Callback, SenderInterface } from "@gauf/sender";
 import { Metrics } from "@gauf/tracker";
+import { Callback, Transport } from "@gauf/transport";
 
-export default class SenderConsole implements SenderInterface {
+export default class TransportConsole extends Transport {
   public connect(callback: Callback) {
+    super.connect(callback);
     console.log("connected");
-    callback();
   }
   public send(metrics: Metrics) {
-    console.log(metrics);
+    console.log(this.pack(metrics));
   }
   public disconnect() {
     console.log("disconnect");

@@ -41,7 +41,7 @@ export const extractMousePosition: Extractor = (event: MouseEvent) => {
     y < scroll.y ||
     y > scroll.y + size.height;
 
-  return { x, y /*, outside */ };
+  return { x, y, outside };
 };
 
 export const extractDeviceOrientation: Extractor = (event: DeviceOrientationEvent): DeviceOrientation => {

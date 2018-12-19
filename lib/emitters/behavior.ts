@@ -5,7 +5,7 @@ import {
   Extractor,
   extractWindowScroll,
   extractWindowSize,
-} from "@gauf/extractors/behavior";
+} from "@gauf/emitters/extractors/behavior";
 
 export type Settings = {
   metrics?: string[];
@@ -36,7 +36,7 @@ export const metricSources: MetricSources = [
   { event: "dblclick", extractor: extractMousePosition, useCapture: true },
   { event: "deviceorientation", extractor: extractDeviceOrientation },
   { event: "scroll", extractor: extractWindowScroll },
-  { event: "rezie", extractor: extractWindowSize },
+  { event: "resize", extractor: extractWindowSize },
 ];
 
 export default class MetricBehaviorEmitter extends Emitter {
@@ -89,6 +89,7 @@ export default class MetricBehaviorEmitter extends Emitter {
       this.emit({
         name,
         payload: typeof extractor === "function" ? extractor(event) : undefined,
+        source: "behavior",
         timestamp: +new Date(),
       });
   }

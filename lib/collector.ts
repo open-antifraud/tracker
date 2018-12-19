@@ -20,8 +20,8 @@ export class Collector {
     ];
   }
 
-  public activate() {
-    this.emitters.forEach((emmiter) => emmiter.activate());
+  public activate(payload?: object) {
+    this.emitters.forEach((emmiter) => emmiter.activate(payload));
   }
 
   public deactivate() {

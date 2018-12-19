@@ -1,50 +1,33 @@
-import { Callback, SenderInterface } from "@gauf/sender";
-import { Metrics } from "@gauf/tracker";
+import { Metrics, Packer } from "@gauf/tracker";
 
-import { Packer, packJSON } from "@gauf/packer";
-import SenderConsole from "@gauf/senders/console";
-import SenderHttp from "@gauf/senders/http";
-import SenderWebsocket from "@gauf/senders/websocket";
+export type Callback = () => void;
 
-export type Settings = {
-  sender?: string;
-};
-
-export type TransportInterface = {
+export interface ITransport {
   connect(callback: Callback): void;
   send(metrics: Metrics): void;
   disconnect(): void;
-};
+}
 
-export class Transport implements TransportInterface {
-  protected sender: SenderInterface;
+export abstract class Transport implements ITransport {
 
-  constructor(url: string, settings: Settings = {}) {
-    this.sender = this.createSender(url, settings);
+  protected url: string;
+  private packer?: Packer;
+
+  constructor(url: string, packer?: Packer) {
+    this.url = url;
+    this.packer = packer;
   }
-
   public connect(callback: Callback): void {
-    this.sender.connect(callback);
+    callback();
   }
 
-  public send(metrics: Metrics): void {
-    this.sender.send(metrics);
-  }
+  public abstract send(metrics: Metrics): void;
 
   public disconnect(): void {
-    this.sender.disconnect();
+    // tslint:disable-line:no-empty
   }
 
-  protected createSender(url: string, settings: Settings): SenderInterface {
-    switch (settings.sender) {
-      case "websocket":
-        return new SenderWebsocket(url, packJSON);
-
-      case "http":
-        return new SenderHttp(url, packJSON);
-
-      default:
-        return new SenderConsole();
-    }
+  protected pack(metrics: Metrics): any {
+    return this.packer ? this.packer(metrics) : metrics;
   }
 }

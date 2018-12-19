@@ -1,5 +1,8 @@
 import { Collector, Settings as CollectorSettings } from "@gauf/collector";
-import { Settings as TransportSettings, Transport } from "@gauf/transport";
+import { Transport } from "@gauf/transport";
+import TransportConsole from "@gauf/transports/console";
+import TransportHttp from "@gauf/transports/http";
+import TransportWebsocket from "@gauf/transports/websocket";
 
 declare var process: {
   env: {
@@ -10,6 +13,7 @@ declare var process: {
 
 export type Metric = {
   name: string;
+  source: string;
   timestamp: number;
   payload?: any;
 };
@@ -17,36 +21,37 @@ export type Metric = {
 export type Metrics = Metric[];
 
 export type Settings = {
-  debug?: boolean;
   heartbeat?: number;
   metrics?: CollectorSettings;
-  transport?: TransportSettings;
+  transport?: string;
+  packer?: Packer;
 };
 
+export type Packer = (metrics: Metrics) => any;
+
 export default class Tracker {
-  public metrics: Metrics;
-  public collector: Collector;
-  public transport: Transport;
-  public heartbeat?: number;
-  public interval?: number;
+  protected metrics: Metrics;
+  protected collector: Collector;
+  protected transport: Transport;
+  protected packer?: Packer;
+  protected heartbeat?: number;
+  protected interval?: number;
 
   constructor(token: string, settings: Settings = {}) {
-    const url = process.env.ENDPOINT_URL.replace("{token}", token);
-    const listener = (metric: Metric) => this.collect(metric);
-
     this.metrics = [];
-    this.heartbeat = settings!.heartbeat || process.env.ENDPOINT_HEARTBEAT;
-    this.collector = new Collector(listener, settings.metrics);
-    this.transport = new Transport(url, settings.transport);
+    this.heartbeat = settings.heartbeat || process.env.ENDPOINT_HEARTBEAT;
 
-    window.addEventListener("beforeunload", (event: Event) => {
+    this.collector = this.createCollector(settings!.metrics);
+    this.transport = this.createTransport(token, settings!.transport);
+    this.packer = settings!.packer;
+
+    window.addEventListener("beforeunload", () => {
       this.deactivate();
     });
   }
 
-  public activate() {
+  public activate(payload?: any) {
     this.collector.activate();
-
     this.transport.connect(() => {
       this.interval = window.setInterval(() => {
         this.transport.send(this.metrics);
@@ -62,6 +67,23 @@ export default class Tracker {
 
     if (this.interval) {
       window.clearInterval(this.interval);
+    }
+  }
+
+  protected createCollector(settings?: CollectorSettings) {
+    const listener = (metric: Metric) => this.collect(metric);
+    return new Collector(listener, settings);
+  }
+
+  protected createTransport(token: string, transport?: string) {
+    const url = process.env.ENDPOINT_URL.replace("{token}", token);
+    switch (transport) {
+      case "http":
+        return new TransportHttp(url, this.packer);
+      case "websocket":
+        return new TransportWebsocket(url, this.packer);
+      default:
+        return new TransportConsole(url, this.packer);
     }
   }
 

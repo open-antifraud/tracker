@@ -55,6 +55,7 @@ export default class MetricNavigatorEmitter extends MetricEmitter {
       metrics.map((property) => this.emit({
         name: property,
         payload: (navigator as any)[property], // @TODO
+        source: "navigator",
         timestamp: +new Date(),
       }));
 
