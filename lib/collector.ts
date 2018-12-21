@@ -6,6 +6,7 @@ import { Metric } from "@gauf/tracker";
 export type Settings = {
   behavior?: MetricBehaviorEmitterSettings;
   navigator?: MetricNavigatorEmitterSettings;
+  emitters?: Emitter[];
 };
 
 export type Listener = (metric: Metric) => void;
@@ -14,10 +15,9 @@ export class Collector {
   public emitters: Emitter[];
 
   constructor(listener: Listener, settings: Settings = {}) {
-    this.emitters = [
-      new MetricNavigatorEmitter(listener, settings.navigator),
-      new MetricBehaviorEmitter(listener, settings.behavior),
-    ];
+    this.emitters = settings.emitters
+      ? this.createCustomEmitters(listener, settings)
+      : this.createDefaultEmitters(listener, settings);
   }
 
   public activate() {
@@ -26,5 +26,25 @@ export class Collector {
 
   public deactivate() {
     this.emitters.forEach((emmiter) => emmiter.deactivate());
+  }
+
+  private createCustomEmitters(listener: Listener, settings: Settings): Emitter[] {
+    return settings.emitters!.map((EmitterClass: any) => {
+      switch (EmitterClass) {
+        case MetricBehaviorEmitter:
+          return new EmitterClass(listener, settings.behavior);
+        case MetricNavigatorEmitter:
+          return new EmitterClass(listener, settings.navigator);
+        default:
+          return new EmitterClass(listener);
+      }
+    });
+  }
+
+  private createDefaultEmitters(listener: Listener, settings: Settings): Emitter[] {
+    return [
+      new MetricNavigatorEmitter(listener, settings.navigator),
+      new MetricBehaviorEmitter(listener, settings.behavior),
+    ];
   }
 }
