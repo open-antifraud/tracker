@@ -20,17 +20,30 @@ Gauf Tracker
 * **packer**
   type: `(metrics: Metrics) => any`
   required: `false`
-  default: `undefined`
+  default: `JSON.stringify` when `websocket` or `http` transport set
 
 ### Usage example
+
+
+1. Minimal
 
 ```javascript
 import Tracker from '@gauf/tracker';
 
+const tracker = new Tracker('my-secret-token')
+
+tracker.activate({ userId: 1 })
+```
+
+2. Custom packer
+
+```javascript
+import Tracker from '@gauf/tracker';
+import * as msgpack from "msgpack-lite";
+
 const tracker = new Tracker('my-secret-token', {
-  heartbeat: 7500,
   transport: 'http',
-  packer: JSON.stringify
+  packer: msgpack.encode
 })
 
 tracker.activate({ userId: 1 })
