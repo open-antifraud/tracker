@@ -1,17 +1,16 @@
-/* tslint:disable:no-console */
-
-import { Metrics } from "@gauf/tracker";
-import { Callback, Transport } from "@gauf/transport";
+import { PackerConsole } from "@gauf/packer";
+import { Metrics, Payload } from "@gauf/tracker";
+import { Transport } from "@gauf/transport";
 
 export default class TransportConsole extends Transport {
-  public connect(callback: Callback) {
-    super.connect(callback);
-    console.log("connected");
+  protected packer: PackerConsole;
+
+  constructor(url: string, packer: PackerConsole) {
+    super(url, packer);
+    this.packer = packer;
   }
-  public send(metrics: Metrics) {
-    console.log(this.pack(metrics));
-  }
-  public disconnect() {
-    console.log("disconnect");
+
+  public send(metrics: Metrics, payload?: Payload) {
+    console.log(this.packer(metrics, payload));  // tslint:disable-line:no-console
   }
 }

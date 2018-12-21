@@ -1,4 +1,5 @@
 import { Collector, Settings as CollectorSettings } from "@gauf/collector";
+import { Packer, PackerConsoleDefault, PackerHttpDefault, PackerWebsocketDefault } from "@gauf/packer";
 import { Transport } from "@gauf/transport";
 import TransportConsole from "@gauf/transports/console";
 import TransportHttp from "@gauf/transports/http";
@@ -20,6 +21,8 @@ export type Metric = {
 
 export type Metrics = Metric[];
 
+export type Payload = any;
+
 export type Settings = {
   heartbeat?: number;
   metrics?: CollectorSettings;
@@ -27,23 +30,20 @@ export type Settings = {
   packer?: Packer;
 };
 
-export type Packer = (metrics: Metrics) => any;
-
 export default class Tracker {
   protected metrics: Metrics;
   protected collector: Collector;
   protected transport: Transport;
-  protected packer?: Packer;
-  protected heartbeat?: number;
+  protected settings: Settings;
   protected interval?: number;
+  protected payload?: any;
 
   constructor(token: string, settings: Settings = {}) {
     this.metrics = [];
-    this.heartbeat = settings.heartbeat || process.env.ENDPOINT_HEARTBEAT;
+    this.settings = settings;
 
     this.collector = this.createCollector(settings!.metrics);
     this.transport = this.createTransport(token, settings!.transport);
-    this.packer = settings!.packer;
 
     window.addEventListener("beforeunload", () => {
       this.deactivate();
@@ -51,19 +51,21 @@ export default class Tracker {
   }
 
   public activate(payload?: any) {
+    this.payload = payload;
     this.collector.activate();
     this.transport.connect(() => {
       this.interval = window.setInterval(() => {
-        this.transport.send(this.metrics);
+        this.transport.send(this.metrics, this.payload);
         this.metrics = [];
-      }, this.heartbeat);
+      }, this.settings.heartbeat || process.env.ENDPOINT_HEARTBEAT);
     });
   }
 
   public deactivate() {
     this.collector.deactivate();
-    this.transport.send(this.metrics);
+    this.transport.send(this.metrics, this.payload);
     this.transport.disconnect();
+    this.payload = null;
 
     if (this.interval) {
       window.clearInterval(this.interval);
@@ -79,11 +81,11 @@ export default class Tracker {
     const url = process.env.ENDPOINT_URL.replace("{token}", token);
     switch (transport) {
       case "http":
-        return new TransportHttp(url, this.packer);
+        return new TransportHttp(url, this.settings.packer || PackerHttpDefault);
       case "websocket":
-        return new TransportWebsocket(url, this.packer);
+        return new TransportWebsocket(url, this.settings.packer || PackerWebsocketDefault);
       default:
-        return new TransportConsole(url, this.packer);
+        return new TransportConsole(url, this.settings.packer || PackerConsoleDefault);
     }
   }
 
