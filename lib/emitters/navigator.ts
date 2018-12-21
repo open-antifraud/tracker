@@ -53,9 +53,9 @@ export default class MetricNavigatorEmitter extends MetricEmitter {
   private waitAndEmit() {
     this.timeout = window.setTimeout(() => {
       metrics.map((property) => this.emit({
+        emitter: "navigator",
         name: property,
         payload: (navigator as any)[property], // @TODO
-        source: "navigator",
         timestamp: +new Date(),
       }));
 

@@ -87,9 +87,9 @@ export default class MetricBehaviorEmitter extends Emitter {
   protected createHandler(name: string, extractor?: Extractor)  {
     return (event: Event): void =>
       this.emit({
+        emitter: "behavior",
         name,
         payload: typeof extractor === "function" ? extractor(event) : undefined,
-        source: "behavior",
         timestamp: +new Date(),
       });
   }

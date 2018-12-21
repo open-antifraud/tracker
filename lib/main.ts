@@ -14,7 +14,7 @@ declare var process: {
 
 export type Metric = {
   name: string;
-  source: string;
+  emitter: string;
   timestamp: number;
   payload?: any;
 };
@@ -25,7 +25,7 @@ export type Payload = any;
 
 export type Settings = {
   heartbeat?: number;
-  metrics?: CollectorSettings;
+  collector?: CollectorSettings;
   transport?: string;
   packer?: Packer;
 };
@@ -74,7 +74,7 @@ export default class Tracker {
 
   protected createCollector(settings: Settings) {
     const listener = (metric: Metric) => this.collect(metric);
-    return new Collector(listener, settings.metrics);
+    return new Collector(listener, settings.collector);
   }
 
   protected createTransport(token: string, settings: Settings) {
