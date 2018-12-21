@@ -30,9 +30,12 @@ export default class MetricNavigatorEmitter extends MetricEmitter {
   protected headerbeat: number;
   protected metrics: string[];
   protected timeout?: number;
+  protected name: string;
 
   constructor(listener: Listener, settings: Settings = {}) {
     super(listener, settings);
+
+    this.name = "navigator";
 
     this.headerbeat = settings.heartbeat || DEFAULT_HEARTBEAT;
     this.metrics = settings.metrics && settings.metrics.length
@@ -52,13 +55,7 @@ export default class MetricNavigatorEmitter extends MetricEmitter {
 
   private waitAndEmit() {
     this.timeout = window.setTimeout(() => {
-      metrics.map((property) => this.emit({
-        emitter: "navigator",
-        name: property,
-        payload: (navigator as any)[property], // @TODO
-        timestamp: +new Date(),
-      }));
-
+      metrics.map((property) => this.emit(property, (navigator as any)[property]));
       this.waitAndEmit();
     }, this.headerbeat);
   }

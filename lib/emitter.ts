@@ -11,8 +11,10 @@ export interface IEmitter {
 export default abstract class Emitter implements IEmitter {
   public readonly settings: Settings;
   public readonly listener: Listener;
+  protected name: string;
 
   constructor(listener: Listener, settings: Settings) {
+    this.name = "default";
     this.listener = listener;
     this.settings = settings;
   }
@@ -21,7 +23,12 @@ export default abstract class Emitter implements IEmitter {
 
   public abstract deactivate(): void;
 
-  protected emit(metric: Metric): void {
-    this.listener(metric);
+  protected emit(name: string, payload?: any): void {
+    this.listener({
+      emitter: this.name,
+      name,
+      payload,
+      timestamp: +new Date(),
+    });
   }
 }

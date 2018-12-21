@@ -41,9 +41,11 @@ export const metricSources: MetricSources = [
 
 export default class MetricBehaviorEmitter extends Emitter {
   protected metricSourceListeners: MetricSourceListeners;
+  protected name: string;
 
   constructor(listener: Listener, settings: Settings = {}) {
     super(listener, settings);
+    this.name = "behavior";
 
     this.metricSourceListeners = settings.metrics && settings.metrics.length
       ? metricSources
@@ -86,11 +88,6 @@ export default class MetricBehaviorEmitter extends Emitter {
 
   protected createHandler(name: string, extractor?: Extractor)  {
     return (event: Event): void =>
-      this.emit({
-        emitter: "behavior",
-        name,
-        payload: typeof extractor === "function" ? extractor(event) : undefined,
-        timestamp: +new Date(),
-      });
+      this.emit(name, typeof extractor === "function" ? extractor(event) : undefined);
   }
 }
