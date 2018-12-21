@@ -36,21 +36,21 @@ export default class Tracker {
   protected transport: Transport;
   protected settings: Settings;
   protected interval?: number;
-  protected payload?: any;
+  protected payload?: Payload;
 
   constructor(token: string, settings: Settings = {}) {
     this.metrics = [];
     this.settings = settings;
 
-    this.collector = this.createCollector(settings!.metrics);
-    this.transport = this.createTransport(token, settings!.transport);
+    this.collector = this.createCollector(settings);
+    this.transport = this.createTransport(token, settings);
 
     window.addEventListener("beforeunload", () => {
       this.deactivate();
     });
   }
 
-  public activate(payload?: any) {
+  public activate(payload?: Payload) {
     this.payload = payload;
     this.collector.activate();
     this.transport.connect(() => {
@@ -72,20 +72,20 @@ export default class Tracker {
     }
   }
 
-  protected createCollector(settings?: CollectorSettings) {
+  protected createCollector(settings: Settings) {
     const listener = (metric: Metric) => this.collect(metric);
-    return new Collector(listener, settings);
+    return new Collector(listener, settings.metrics);
   }
 
-  protected createTransport(token: string, transport?: string) {
+  protected createTransport(token: string, settings: Settings) {
     const url = process.env.ENDPOINT_URL.replace("{token}", token);
-    switch (transport) {
+    switch (settings.transport) {
       case "http":
-        return new TransportHttp(url, this.settings.packer || PackerHttpDefault);
+        return new TransportHttp(url, settings.packer || PackerHttpDefault);
       case "websocket":
-        return new TransportWebsocket(url, this.settings.packer || PackerWebsocketDefault);
+        return new TransportWebsocket(url, settings.packer || PackerWebsocketDefault);
       default:
-        return new TransportConsole(url, this.settings.packer || PackerConsoleDefault);
+        return new TransportConsole(url, settings.packer || PackerConsoleDefault);
     }
   }
 
