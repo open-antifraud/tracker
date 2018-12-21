@@ -28,6 +28,7 @@ Gauf Tracker
 import Tracker from '@gauf/tracker';
 
 const tracker = new Tracker('my-secret-token', {
+  heartbeat: 7500,
   transport: 'http',
   packer: JSON.stringify
 })
