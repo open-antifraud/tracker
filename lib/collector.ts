@@ -6,7 +6,7 @@ import { Metric } from "@gauf/tracker";
 export type Settings = {
   behavior?: MetricBehaviorEmitterSettings;
   navigator?: MetricNavigatorEmitterSettings;
-  emitters?: Emitter[];
+  emitters?: any[];
 };
 
 export type Listener = (metric: Metric) => void;
