@@ -1,4 +1,3 @@
-import html from 'rollup-plugin-fill-html';
 import replace from 'rollup-plugin-replace';
 import typescript from 'rollup-plugin-typescript2';
 import { uglify } from "rollup-plugin-uglify";
@@ -24,10 +23,6 @@ export default {
   plugins: [
     replace(replaceEnv),
     typescript(),
-    uglify(),
-    html({
-      template: './tests/playground.html',
-      inject: 'head'
-    }),
+    uglify()
   ]
 }
