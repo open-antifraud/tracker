@@ -7,6 +7,9 @@
     "build": "rollup --config ./rollup.config.js",
     "lint": "tslint --project tslint.json",
     "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "postinstall": "npm run build"
   },
   "dependencies": {
@@ -20,6 +23,7 @@
   },
   "devDependencies": {
     "@types/jest": "^23.3.10",
+    "coveralls": "^3.0.2",
     "jest": "^23.6.0",
     "jest-config": "^23.6.0",
     "ts-jest": "^23.10.5",
@@ -27,10 +31,10 @@
   },
   "jest": {
     "transform": {
-      ".(ts|tsx)": "ts-jest"
+      ".ts": "ts-jest"
     },
     "testEnvironment": "jsdom",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testRegex": "tests\\/.*\\.(test|spec)\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -53,7 +57,7 @@
       }
     },
     "collectCoverageFrom": [
-      "src/*.{js,ts}"
+      "lib/*.ts"
     ]
   }
 }
