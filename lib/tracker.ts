@@ -25,25 +25,34 @@ export type Payload = any;
 
 export type Settings = {
   heartbeat?: number;
-  collector?: CollectorSettings;
   transport?: string;
+  url?: string;
+  collector?: CollectorSettings;
   packer?: Packer;
 };
 
+const defaultSettings = {
+  heartbeat: process.env.ENDPOINT_HEARTBEAT,
+  transport: "console",
+  url: process.env.ENDPOINT_URL,
+};
+
 export default class Tracker {
+  protected interval?: number;
   protected metrics: Metrics;
   protected collector: Collector;
-  protected transport: Transport;
   protected settings: Settings;
-  protected interval?: number;
+  protected transport: Transport;
   protected payload?: Payload;
 
   constructor(token: string, settings: Settings = {}) {
     this.metrics = [];
-    this.settings = settings;
+    this.settings = (Object as any).assign({}, defaultSettings, settings);
+
+    const url = this.settings.url!.replace("{token}", token);
 
     this.collector = this.createCollector(settings);
-    this.transport = this.createTransport(token, settings);
+    this.transport = this.createTransport(url, settings);
 
     window.addEventListener("beforeunload", () => {
       this.deactivate();
@@ -77,16 +86,16 @@ export default class Tracker {
     return new Collector(listener, settings.collector);
   }
 
-  protected createTransport(token: string, settings: Settings) {
-    const url = process.env.ENDPOINT_URL.replace("{token}", token);
+  protected createTransport(url: string, settings: Settings) {
     switch (settings.transport) {
       case "http":
         return new TransportHttp(url, settings.packer || PackerHttpDefault);
       case "websocket":
         return new TransportWebsocket(url, settings.packer || PackerWebsocketDefault);
-      default:
+      case "console":
         return new TransportConsole(url, settings.packer || PackerConsoleDefault);
     }
+    throw new Error("Transport can't be created");
   }
 
   protected collect(metric: Metric) {
