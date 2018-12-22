@@ -15,15 +15,15 @@ export default class TransportWebsocket extends Transport {
     this.connection.onopen = () => {
       callback();
     };
-    this.connection.onerror = console.log; // tslint:disable-line:no-console
+    this.connection.onerror = console.error;  // tslint:disable-line:no-console
   }
   public send(metrics: Metrics, payload?: Payload): void {
-    if (this.connection) {
+    if (this.connection && this.connection.readyState === WebSocket.OPEN) {
       this.connection.send(this.packer(metrics, payload));
     }
   }
   public disconnect() {
-    if (this.connection) {
+    if (this.connection && this.connection.readyState === WebSocket.OPEN) {
       this.connection.close();
     }
   }
