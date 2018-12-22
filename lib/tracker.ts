@@ -66,7 +66,7 @@ export default class Tracker {
       this.interval = window.setInterval(() => {
         this.transport.send(this.metrics, this.payload);
         this.metrics = [];
-      }, this.settings.heartbeat || process.env.ENDPOINT_HEARTBEAT);
+      }, this.settings.heartbeat);
     });
   }
 
