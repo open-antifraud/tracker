@@ -5,7 +5,7 @@ const fakeURL = "ws://fakehost";
 process.env.ENDPOINT_URL = fakeURL;
 
 import Tracker from "@gauf/tracker";
-import { WebSocket, Server } from 'mock-socket';
+import { Server, WebSocket } from "mock-socket";
 
 const mockServer = new Server(fakeURL);
 
@@ -26,14 +26,14 @@ describe("Transport `websocket`", () => {
     const token = "fake-token";
     const messages: any[] = [];
 
-    mockServer.on('connection', (socket:any) => {
-      socket.on('message', (message:any) => {
-        messages.push(JSON.parse(message))
+    mockServer.on("connection", (socket: any) => {
+      socket.on("message", (message: any) => {
+        messages.push(JSON.parse(message));
       });
     });
 
     const tracker = new Tracker(token, {
-      transport: "websocket"
+      transport: "websocket",
     });
 
     tracker.activate(payload);
@@ -50,8 +50,8 @@ describe("Transport `websocket`", () => {
         expect.objectContaining({
           metrics: expect.any(Array),
           payload,
-        })
-      ])
+        }),
+      ]),
     );
   });
 });

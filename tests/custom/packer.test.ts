@@ -13,7 +13,8 @@ describe.only("Custom packer", () => {
   });
 
   it("correct works with custom packer", () => {
-    const packer = (metrics: Metrics, payload: Payload) => [metrics, payload]; // tslint:disable-line:no-shadowed-variable
+    // tslint:disable-next-line:no-shadowed-variable
+    const packer = (metrics: Metrics, payload: Payload) => [metrics, payload];
     const payload = { userId: 1 };
     const tracker = new Tracker("my-secret-token", {
       packer,

@@ -16,7 +16,7 @@ describe("Transport `http`", () => {
     const payload = { userId: 1 };
     const token = "fake-token";
     const tracker = new Tracker(token, {
-      transport: "http"
+      transport: "http",
     });
 
     tracker.activate(payload);
