@@ -13,16 +13,18 @@ const replaceEnv = Object.keys(defaultEnv).reduce((accumulator, key) => {
 }, {})
 
 export default {
-  input: './lib/main.ts',
+  input: './lib/tracker.ts',
   output: {
-    file: './build/main.js',
+    file: './build/tracker.js',
     format: 'umd',
     name: '@gauf/tracker',
     sourcemap: true
   },
   plugins: [
     replace(replaceEnv),
-    typescript(),
+    typescript({
+      tsconfig: "./tsconfig.build.json",
+    }),
     uglify()
   ]
 }

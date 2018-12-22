@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "ES2015",
+    "module": "es2015",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -10,14 +10,7 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@gauf/tracker": ["./lib/main"],
       "@gauf/*": ["./lib/*"]
-    },
-    "rootDir": "./lib",
-    "outDir": "./build"
-  },
-  "exclude": [
-    "./build",
-    "./tests"
-  ]
+    }
+  }
 }
