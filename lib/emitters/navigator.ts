@@ -30,12 +30,10 @@ export default class MetricNavigatorEmitter extends MetricEmitter {
   protected headerbeat: number;
   protected metrics: string[];
   protected timeout?: number;
-  protected name: string;
+  protected static emitter: string = "navigator";
 
   constructor(listener: Listener, settings: Settings = {}) {
     super(listener, settings);
-
-    this.name = "navigator";
 
     this.headerbeat = settings.heartbeat || DEFAULT_HEARTBEAT;
     this.metrics = settings.metrics && settings.metrics.length

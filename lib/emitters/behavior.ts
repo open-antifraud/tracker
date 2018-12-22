@@ -40,12 +40,11 @@ export const metricSources: MetricSources = [
 ];
 
 export default class MetricBehaviorEmitter extends Emitter {
+  protected static emitter: string = "behavior";
   protected metricSourceListeners: MetricSourceListeners;
-  protected name: string;
 
   constructor(listener: Listener, settings: Settings = {}) {
     super(listener, settings);
-    this.name = "behavior";
 
     this.metricSourceListeners = settings.metrics && settings.metrics.length
       ? metricSources
