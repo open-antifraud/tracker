@@ -27,10 +27,10 @@ export type Settings = {
 };
 
 export default class MetricNavigatorEmitter extends MetricEmitter {
+  protected static emitter: string = "navigator";
   protected headerbeat: number;
   protected metrics: string[];
   protected timeout?: number;
-  protected static emitter: string = "navigator";
 
   constructor(listener: Listener, settings: Settings = {}) {
     super(listener, settings);

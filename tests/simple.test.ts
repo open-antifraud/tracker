@@ -1,18 +1,18 @@
-import Tracker from "@gauf/tracker"
+import Tracker from "@gauf/tracker";
 
-process.env.ENDPOINT_HEARTBEAT = '500';
-process.env.ENDPOINT_URL = 'http://fakehost/{token}'
+process.env.ENDPOINT_HEARTBEAT = "500";
+process.env.ENDPOINT_URL = "http://fakehost/{token}";
 
 describe("Simple test", () => {
-  it("Instance without errors", done => {
-    const tracker = new Tracker('token');
+  it("Instance without errors", (done) => {
+    const tracker = new Tracker("token");
 
-    tracker.activate()
+    tracker.activate();
 
     setTimeout(() => {
-      tracker.deactivate()
-      done()
-    }, 1000)
-  })
+      tracker.deactivate();
+      done();
+    }, 1000);
+  });
 
-})
+});
