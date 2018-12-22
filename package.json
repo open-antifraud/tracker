@@ -26,22 +26,26 @@
     "coveralls": "^3.0.2",
     "jest": "^23.6.0",
     "jest-config": "^23.6.0",
+    "mock-socket": "^8.0.5",
     "ts-jest": "^23.10.5",
     "ts-node": "^7.0.1"
   },
   "jest": {
+    "verbose": true,
     "transform": {
       ".ts": "ts-jest"
     },
     "testEnvironment": "jsdom",
     "testRegex": "tests\\/.*\\.(test|spec)\\.(ts|tsx|js)$",
+    "setupFiles": [
+      "./tests/runtime.ts"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js"
     ],
     "moduleNameMapper": {
-      "^@gauf/tracker": "<rootDir>/lib/main",
       "^@gauf/(.*)$": "<rootDir>/lib/$1"
     },
     "coveragePathIgnorePatterns": [
@@ -50,10 +54,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 90,
-        "functions": 95,
-        "lines": 95,
-        "statements": 95
+        "branches": 60,
+        "functions": 60,
+        "lines": 60,
+        "statements": 60
       }
     },
     "collectCoverageFrom": [
