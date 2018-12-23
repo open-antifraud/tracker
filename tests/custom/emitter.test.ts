@@ -5,6 +5,7 @@ import Tracker from "@gauf/tracker";
 
 class MetricCustomEmitter extends Emitter {
   protected static emitter: string = "custom";
+
   protected interval?: number;
 
   public activate() {
@@ -31,8 +32,9 @@ describe("Custom emitter", () => {
   });
 
   it("correct works with `MetricCustomEmitter`", () => {
+    const url = "http://non-exists-urls";
     const payload = { userId: 1 };
-    const tracker = new Tracker("my-secret-token", {
+    const tracker = new Tracker(url, {
       collector: {
         emitters: [
           MetricCustomEmitter,
@@ -41,13 +43,14 @@ describe("Custom emitter", () => {
       transport: "console",
     });
 
-    tracker.activate();
+    tracker.activate(payload);
 
     jest.runOnlyPendingTimers();
 
     expect(console.log).toHaveBeenCalledWith(
       expect.objectContaining({
         metrics: expect.any(Array),
+        payload,
       }),
     );
   });

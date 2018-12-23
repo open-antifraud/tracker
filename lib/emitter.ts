@@ -8,12 +8,10 @@ export interface InterfaceEmitter {
   deactivate(): void;
 }
 
-export interface InterfaceEmitterConstructor {
-  new (listener: Listener, settings?: Settings) : InterfaceEmitter;
-}
+export type InterfaceEmitterConstructor = new (listener: Listener, settings?: Settings)  => InterfaceEmitter;
 
-export default abstract class Emitter implements InterfaceEmitter {
-  static readonly key: string = "default";
+export default abstract class MetricEmitter implements InterfaceEmitter {
+  public static readonly key: string = "default";
 
   public readonly settings?: Settings;
   public readonly listener: Listener;
@@ -29,7 +27,7 @@ export default abstract class Emitter implements InterfaceEmitter {
 
   protected emit(name: string, payload?: Payload): void {
     this.listener({
-      emitter: (this.constructor as typeof Emitter).key,
+      emitter: (this.constructor as typeof MetricEmitter).key,
       name,
       payload,
       timestamp: +new Date(),

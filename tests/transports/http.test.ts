@@ -1,5 +1,3 @@
-/* tslint:disable:no-console */
-
 import Tracker from "@gauf/tracker";
 
 describe("Transport `http`", () => {
@@ -14,9 +12,9 @@ describe("Transport `http`", () => {
 
   it("use beacon sender", () => {
     const payload = { userId: 1 };
-    const token = "fake-token";
+    const token = "http://non-exists-url";
     const tracker = new Tracker(token, {
-      transport: "http",
+      transport: "http:beacon",
     });
 
     tracker.activate(payload);

@@ -1,8 +1,8 @@
 /* tslint:disable:no-console */
 
-import Tracker, { Metrics, Payload } from "@gauf/tracker";
+import Tracker from "@gauf/tracker";
 
-describe.only("Custom packer", () => {
+describe("Custom packer", () => {
   beforeEach(() => {
     console.log = jest.fn();
     jest.useFakeTimers();
@@ -13,12 +13,10 @@ describe.only("Custom packer", () => {
   });
 
   it("correct works with custom packer", () => {
-    // tslint:disable-next-line:no-shadowed-variable
-    const packer = (metrics: Metrics, payload: Payload) => [metrics, payload];
+    const url = "console://non-exists-url";
     const payload = { userId: 1 };
-    const tracker = new Tracker("my-secret-token", {
-      packer,
-      transport: "console",
+    const tracker = new Tracker(url, {
+      packer: ({ metrics, payload }) => [metrics, payload], // tslint:disable-line:no-shadowed-variable
     });
 
     tracker.activate(payload);
@@ -28,7 +26,7 @@ describe.only("Custom packer", () => {
     expect(console.log).toHaveBeenCalledWith(
       expect.objectContaining([
         expect.any(Array),
-        expect.objectContaining(payload),
+        payload,
       ]),
     );
   });

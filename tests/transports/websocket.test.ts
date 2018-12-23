@@ -1,12 +1,7 @@
-/* tslint:disable:no-console */
-
-const fakeURL = "ws://fakehost";
-
-process.env.ENDPOINT_URL = fakeURL;
-
 import Tracker from "@gauf/tracker";
 import { Server, WebSocket } from "mock-socket";
 
+const fakeURL = "ws://fakehost";
 const mockServer = new Server(fakeURL);
 
 describe("Transport `websocket`", () => {
@@ -23,7 +18,6 @@ describe("Transport `websocket`", () => {
 
   it("correct working", () => {
     const payload = { userId: 1 };
-    const token = "fake-token";
     const messages: any[] = [];
 
     mockServer.on("connection", (socket: any) => {
@@ -32,9 +26,7 @@ describe("Transport `websocket`", () => {
       });
     });
 
-    const tracker = new Tracker(token, {
-      transport: "websocket",
-    });
+    const tracker = new Tracker(fakeURL);
 
     tracker.activate(payload);
 

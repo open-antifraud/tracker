@@ -1,16 +1,8 @@
-import { Collector, Settings as CollectorSettings } from "@gauf/collector";
-import { Packer, PackerConsoleDefault, PackerHttpDefault, PackerWebsocketDefault } from "@gauf/packer";
-import { Transport } from "@gauf/transport";
-import TransportConsole from "@gauf/transports/console";
-import TransportHttp from "@gauf/transports/http";
-import TransportWebsocket from "@gauf/transports/websocket";
-
-declare var process: {
-  env: {
-    ENDPOINT_URL: string,
-    ENDPOINT_HEARTBEAT: number,
-  },
-};
+import Collector, { Settings as CollectorSettings } from "@gauf/collector";
+import { Packed, Packer } from "@gauf/packer";
+import Transport from "@gauf/transport";
+import TransportFactory, { Settings as TransportFactorySettings } from "@gauf/transport/factory";
+import TransportNetworkDuplex from "@gauf/transport/network/duplex";
 
 export type Metric = {
   name: string;
@@ -25,34 +17,35 @@ export type Payload = any;
 
 export type Settings = {
   heartbeat?: number;
-  transport?: string;
-  url?: string;
   collector?: CollectorSettings;
-  packer?: Packer;
+  transport?: TransportFactorySettings;
+  packer?: Packer<any>;
 };
 
 const defaultSettings = {
-  heartbeat: process.env.ENDPOINT_HEARTBEAT,
-  transport: "console",
-  url: process.env.ENDPOINT_URL,
+  heartbeat: 2000,
 };
 
 export default class Tracker {
   protected interval?: number;
-  protected metrics: Metrics;
+  protected heartbeat: number;
+
+  protected metrics: Metric[];
+
   protected collector: Collector;
-  protected settings: Settings;
   protected transport: Transport;
+  protected packer: Packer<any>;
   protected payload?: Payload;
 
-  constructor(token: string, settings: Settings = {}) {
+  constructor(url: string, trackerSettings?: Settings) {
+    const settings = (Object as any).assign({}, defaultSettings, trackerSettings);
+
     this.metrics = [];
-    this.settings = (Object as any).assign({}, defaultSettings, settings);
 
-    const url = this.settings.url!.replace("{token}", token);
-
-    this.collector = this.createCollector(settings);
-    this.transport = this.createTransport(url, settings);
+    this.collector = this.createCollector(settings.collector);
+    this.transport = this.createTransport(url, settings.transport);
+    this.packer = this.createPacker(this.transport, settings.packer);
+    this.heartbeat = settings.heartbeat;
 
     window.addEventListener("beforeunload", () => {
       this.deactivate();
@@ -62,40 +55,54 @@ export default class Tracker {
   public activate(payload?: Payload) {
     this.payload = payload;
     this.collector.activate();
-    this.transport.connect(() => {
-      this.interval = window.setInterval(() => {
-        this.transport.send(this.metrics, this.payload);
-        this.metrics = [];
-      }, this.settings.heartbeat);
-    });
+
+    if (this.transport instanceof TransportNetworkDuplex) {
+      this.transport.connect(() => {
+        this.createSendInterval();
+      });
+    } else {
+      this.createSendInterval();
+    }
   }
 
   public deactivate() {
     this.collector.deactivate();
-    this.transport.send(this.metrics, this.payload);
-    this.transport.disconnect();
-    this.payload = null;
-
+    this.transport.send(this.packData());
+    if (this.transport instanceof TransportNetworkDuplex) {
+      this.transport.disconnect();
+    }
     if (this.interval) {
       window.clearInterval(this.interval);
     }
+    this.payload = undefined;
   }
 
-  protected createCollector(settings: Settings) {
+  protected packData(): Packed<any> {
+    return this.packer({
+      metrics: this.metrics,
+      payload: this.payload,
+    });
+  }
+
+  protected createSendInterval() {
+    this.interval = window.setInterval(() => {
+      this.transport.send(this.packData());
+      this.metrics = [];
+    }, this.heartbeat);
+  }
+
+  protected createCollector(settings?: CollectorSettings) {
     const listener = (metric: Metric) => this.collect(metric);
-    return new Collector(listener, settings.collector);
+    return new Collector(listener, settings);
   }
 
-  protected createTransport(url: string, settings: Settings) {
-    switch (settings.transport) {
-      case "http":
-        return new TransportHttp(url, settings.packer || PackerHttpDefault);
-      case "websocket":
-        return new TransportWebsocket(url, settings.packer || PackerWebsocketDefault);
-      case "console":
-        return new TransportConsole(url, settings.packer || PackerConsoleDefault);
-    }
-    throw new Error("Transport can't be created");
+  protected createTransport(url: string, settings?: TransportFactorySettings) {
+    const factory = new TransportFactory();
+    return factory.createTransport(url, settings);
+  }
+
+  protected createPacker(transport: Transport, settings?: Packer<any>) {
+    return settings || (transport.constructor as typeof Transport).defaultPacker;
   }
 
   protected collect(metric: Metric) {

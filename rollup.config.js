@@ -14,7 +14,7 @@ const replaceEnv = Object.keys(defaultEnv).reduce((accumulator, key) => {
 }, {})
 
 export default {
-  input: './lib/tracker.ts',
+  input: './tests/custom/build.test.ts',
   output: {
     file: './build/tracker.js',
     format: 'umd',

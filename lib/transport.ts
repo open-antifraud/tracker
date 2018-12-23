@@ -1,28 +1,6 @@
-import { Data, Packer } from "@gauf/packer";
-import { Metrics, Payload } from "@gauf/tracker";
+import { Packed, Packer, Unpacked } from "@gauf/packer";
 
-export type Callback = () => void;
-
-export interface ITransport {
-  send(metrics: Metrics, payload?: Payload): void;
-}
-
-export abstract class Transport implements ITransport {
-  protected url: string;
-  protected packer: Packer;
-
-  constructor(url: string, packer: Packer) {
-    this.url = url;
-    this.packer = packer;
-  }
-
-  public connect(callback: Callback): void {
-    callback();
-  }
-
-  public abstract send(metrics: Metrics, payload?: any): void;
-
-  public disconnect(): void {
-    // tslint:disable-line:no-empty
-  }
+export default abstract class Transport {
+  public static readonly defaultPacker: Packer<any> = (data: Unpacked) => data;
+  public abstract send(data: Packed<any>): void;
 }

@@ -1,18 +1,15 @@
-import { Metric } from "@gauf/tracker";
-import Emitter, { InterfaceEmitter, InterfaceEmitterConstructor } from "@gauf/emitter";
+import Emitter, { InterfaceEmitter, InterfaceEmitterConstructor, Listener } from "@gauf/emitter";
 import MetricBehaviorEmitter from "@gauf/emitters/behavior";
 import MetricNavigatorEmitter from "@gauf/emitters/navigator";
 
 export type Settings = {
   emitters?: InterfaceEmitterConstructor[];
   settings?: {
-    [key: string]: object
+    [key: string]: object,
   };
 };
 
-export type Listener = (metric: Metric) => void;
-
-export class Collector {
+export default class Collector {
   public emitters: InterfaceEmitter[];
 
   constructor(listener: Listener, settings: Settings = {}) {
@@ -29,16 +26,22 @@ export class Collector {
     this.emitters.forEach((emmiter) => emmiter.deactivate());
   }
 
+  private extractSettings(settings: Settings, EmitterClass: any): object | undefined {
+    return settings.settings
+      ? settings.settings[(EmitterClass as typeof Emitter).key]
+      : undefined;
+  }
+
   private createCustomEmitters(listener: Listener, settings: Settings): InterfaceEmitter[] {
     return settings.emitters!.map((EmitterClass: InterfaceEmitterConstructor) => (
-      new EmitterClass(listener, settings.settings![MetricNavigatorEmitter.key])
+      new EmitterClass(listener, this.extractSettings(settings, EmitterClass))
     ));
   }
 
   private createDefaultEmitters(listener: Listener, settings: Settings): Emitter[] {
     return [
-      new MetricNavigatorEmitter(listener, settings.settings![MetricNavigatorEmitter.key]),
-      new MetricBehaviorEmitter(listener, settings.settings![MetricBehaviorEmitter.key]),
+      new MetricNavigatorEmitter(listener, this.extractSettings(settings, MetricNavigatorEmitter)),
+      new MetricBehaviorEmitter(listener, this.extractSettings(settings, MetricBehaviorEmitter)),
     ];
   }
 }

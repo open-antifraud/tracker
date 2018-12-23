@@ -13,10 +13,7 @@ describe("Tracker", () => {
   });
 
   it("deactiavte on window unload", () => {
-    const token = "fake-token";
-    const tracker = new Tracker(token, {
-      transport: "console",
-    });
+    const tracker = new Tracker("console://non-exists-url");
 
     const event = new Event("beforeunload");
 
@@ -28,10 +25,7 @@ describe("Tracker", () => {
   });
 
   it("try to send metrics after deactivation", () => {
-    const token = "fake-token";
-    const tracker = new Tracker(token, {
-      transport: "console",
-    });
+    const tracker = new Tracker("console://non-exists-url");
 
     tracker.activate();
     tracker.deactivate();
@@ -41,12 +35,9 @@ describe("Tracker", () => {
 
   it("has different heartbeat parameter values", () => {
     const heartbeats = [1, 2, 3];
-    const token = "fake-token";
+    const url = "console://non-exists-url";
     const trackers = heartbeats.map((heartbeat) => (
-      new Tracker(token, {
-        heartbeat,
-        transport: "console",
-      })
+      new Tracker(url, { heartbeat })
     ));
 
     trackers.forEach((tracker, userId) => tracker.activate({ userId }));
