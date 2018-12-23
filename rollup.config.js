@@ -3,7 +3,8 @@ import typescript from 'rollup-plugin-typescript2';
 import { uglify } from "rollup-plugin-uglify";
 
 const defaultEnv = {
-  ENDPOINT_URL: 'http://fakehost/{token}',
+  ENDPOINT_HTTP: 'http://fakehost/{token}',
+  ENDPOINT_WEBSOCKET: 'ws://fakehost/{token}',
   ENDPOINT_HEARTBEAT: 5000
 }
 
