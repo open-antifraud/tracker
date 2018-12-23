@@ -27,7 +27,8 @@ export type Settings = {
 };
 
 export default class MetricNavigatorEmitter extends MetricEmitter {
-  protected static emitter: string = "navigator";
+  static readonly key: string = "navigator";
+
   protected headerbeat: number;
   protected metrics: string[];
   protected timeout?: number;

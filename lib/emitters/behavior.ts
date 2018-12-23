@@ -40,7 +40,8 @@ export const metricSources: MetricSources = [
 ];
 
 export default class MetricBehaviorEmitter extends Emitter {
-  protected static emitter: string = "behavior";
+  static readonly key: string = "behavior";
+
   protected metricSourceListeners: MetricSourceListeners;
 
   constructor(listener: Listener, settings: Settings = {}) {

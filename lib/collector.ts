@@ -1,18 +1,19 @@
-import Emitter from "@gauf/emitter";
-import MetricBehaviorEmitter, { Settings as MetricBehaviorEmitterSettings } from "@gauf/emitters/behavior";
-import MetricNavigatorEmitter, { Settings as MetricNavigatorEmitterSettings } from "@gauf/emitters/navigator";
 import { Metric } from "@gauf/tracker";
+import Emitter, { InterfaceEmitter, InterfaceEmitterConstructor } from "@gauf/emitter";
+import MetricBehaviorEmitter from "@gauf/emitters/behavior";
+import MetricNavigatorEmitter from "@gauf/emitters/navigator";
 
 export type Settings = {
-  behavior?: MetricBehaviorEmitterSettings;
-  navigator?: MetricNavigatorEmitterSettings;
-  emitters?: any[];
+  emitters?: InterfaceEmitterConstructor[];
+  settings?: {
+    [key: string]: object
+  };
 };
 
 export type Listener = (metric: Metric) => void;
 
 export class Collector {
-  public emitters: Emitter[];
+  public emitters: InterfaceEmitter[];
 
   constructor(listener: Listener, settings: Settings = {}) {
     this.emitters = settings.emitters
@@ -28,23 +29,16 @@ export class Collector {
     this.emitters.forEach((emmiter) => emmiter.deactivate());
   }
 
-  private createCustomEmitters(listener: Listener, settings: Settings): Emitter[] {
-    return settings.emitters!.map((EmitterClass: any) => {
-      switch (EmitterClass) {
-        case MetricBehaviorEmitter:
-          return new EmitterClass(listener, settings.behavior);
-        case MetricNavigatorEmitter:
-          return new EmitterClass(listener, settings.navigator);
-        default:
-          return new EmitterClass(listener);
-      }
-    });
+  private createCustomEmitters(listener: Listener, settings: Settings): InterfaceEmitter[] {
+    return settings.emitters!.map((EmitterClass: InterfaceEmitterConstructor) => (
+      new EmitterClass(listener, settings.settings![MetricNavigatorEmitter.key])
+    ));
   }
 
   private createDefaultEmitters(listener: Listener, settings: Settings): Emitter[] {
     return [
-      new MetricNavigatorEmitter(listener, settings.navigator),
-      new MetricBehaviorEmitter(listener, settings.behavior),
+      new MetricNavigatorEmitter(listener, settings.settings![MetricNavigatorEmitter.key]),
+      new MetricBehaviorEmitter(listener, settings.settings![MetricBehaviorEmitter.key]),
     ];
   }
 }
