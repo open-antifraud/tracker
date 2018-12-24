@@ -5,32 +5,44 @@ Gauf Tracker
 @TODO
 
 ### Settings
+  transport?: object;
+  packer?: Packer<any>;
 
-* **heartbeat**
+**heartbeat**
   type: `number`
   required: `false`
   default: `5000`
 
-* **transport**
-  type: `string`
-  required: `false`
-  value: `http` | `websocket` | `console`
-  default: `console`
+**collector**
+  type: `object`
+  required: `false`,
+  value:
+```
+{
+  emitters?: InterfaceEmitterConstructor[];
+  settings?: {
+    [key: string]: object,
+  }
+}
+```
 
-* **packer**
+**heartbeat**
+  type: `object` (depend on detected transport)
+  required: `false`
+
+**packer**
   type: `(metrics: Metrics) => any`
   required: `false`
   default: `JSON.stringify` when `websocket` or `http` transport set
 
 ### Usage example
 
-
 1. Minimal
 
 ```javascript
 import Tracker from '@gauf/tracker';
 
-const tracker = new Tracker('my-secret-token')
+const tracker = new Tracker('http://my-receive-service')
 
 tracker.activate({ userId: 1 })
 ```
@@ -41,8 +53,7 @@ tracker.activate({ userId: 1 })
 import Tracker from '@gauf/tracker';
 import * as msgpack from "msgpack-lite";
 
-const tracker = new Tracker('my-secret-token', {
-  transport: 'http',
+const tracker = new Tracker('http://my-receive-service', {
   packer: msgpack.encode
 })
 
@@ -81,7 +92,7 @@ Initialize tracker with custom metric emitter
 import Tracker from '@gauf/tracker';
 import MetricCustomEmitter from './MetricCustomEmitter';
 
-const tracker = new Tracker('my-secret-token', {
+const tracker = new Tracker('http://my-receive-service', {
   collector: {
     emitters: [
       MetricCustomEmitter
