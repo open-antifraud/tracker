@@ -12,10 +12,7 @@ describe("Transport `http`", () => {
 
   it("use beacon sender", () => {
     const payload = { userId: 1 };
-    const token = "http://non-exists-url";
-    const tracker = new Tracker(token, {
-      transport: "http:beacon",
-    });
+    const tracker = new Tracker("http://non-exists-url");
 
     tracker.activate(payload);
 

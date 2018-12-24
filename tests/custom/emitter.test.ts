@@ -32,7 +32,7 @@ describe("Custom emitter", () => {
   });
 
   it("correct works with `MetricCustomEmitter`", () => {
-    const url = "http://non-exists-urls";
+    const url = "console://non-exists-urls";
     const payload = { userId: 1 };
     const tracker = new Tracker(url, {
       collector: {
@@ -40,7 +40,6 @@ describe("Custom emitter", () => {
           MetricCustomEmitter,
         ],
       },
-      transport: "console",
     });
 
     tracker.activate(payload);
