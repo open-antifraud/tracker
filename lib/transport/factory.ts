@@ -1,23 +1,12 @@
-import ProtocolConsole from "@gauf/protocols/console";
-import ProtocolHttpAjax from "@gauf/protocols/http/ajax";
-import ProtocolHttpBeacon from "@gauf/protocols/http/beacon";
-import ProtocolWebsocket from "@gauf/protocols/websocket";
-import Transport from "@gauf/transport";
-
-type Protocol = string;
-
-export type Settings = Protocol | {
-  protocol: Protocol,
-};
+import { Transport } from "@gauf/transport";
+import TransportConsole from "@gauf/transport/console";
+import TransportHttpAjax, { Settings as SettingsAjax } from "@gauf/transport/http/ajax";
+import TransportHttpBeacon from "@gauf/transport/http/beacon";
+import TransportWebsocket from "@gauf/transport/websocket";
 
 const extractProtocolFromURL = (url: string): string | undefined => {
   if (/^http[s]?:\/\//.test(url)) {
-    if ("sendBeacon" in navigator) {
-      return "http:beacon";
-    }
-    if ("XMLHttpRequest" in window) {
-      return "http:xhr";
-    }
+    return "http";
   }
   if (/^ws[s]?:\/\//.test(url)) {
     return "ws";
@@ -27,29 +16,20 @@ const extractProtocolFromURL = (url: string): string | undefined => {
   }
 };
 
-const extractProtocolFromSettings = (settings?: Settings): string | undefined => {
-  if (typeof settings === "string") {
-    return settings;
-  }
-  if (typeof settings === "object" && typeof settings.protocol === "string") {
-    return settings.protocol;
-  }
-};
-
 export default class TransportFactory {
-  public createTransport(url: string, settings?: Settings): Transport {
-    const protocol = extractProtocolFromSettings(settings) || extractProtocolFromURL(url);
-
-    if (protocol === "http:beacon") {
-      return new ProtocolHttpBeacon(url);
-    }
-    if (protocol === "http:xhr") {
-      return new ProtocolHttpAjax(url);
+  public createTransport(url: string, settings?: object): Transport {
+    const protocol = extractProtocolFromURL(url);
+    if (protocol === "http") {
+      if ("sendBeacon" in navigator) {
+        return new TransportHttpBeacon(url);
+      }
+      if ("XMLHttpRequest" in window) {
+        return new TransportHttpAjax(url, settings as SettingsAjax);
+      }
     }
     if (protocol === "ws") {
-      return new ProtocolWebsocket(url);
+      return new TransportWebsocket(url);
     }
-
-    return new ProtocolConsole();
+    return new TransportConsole();
   }
 }

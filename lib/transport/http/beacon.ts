@@ -1,5 +1,5 @@
 import { Packed, Packer } from "@gauf/packer";
-import TransportNetwork from "@gauf/transport/network";
+import { TransportNetwork } from "@gauf/transport";
 
 type Data =
   string | Blob | Int8Array | Int16Array | Int32Array | Uint8Array | Uint16Array | Uint32Array |

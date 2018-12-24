@@ -1,8 +1,7 @@
 import Collector, { Settings as CollectorSettings } from "@gauf/collector";
 import { Packed, Packer } from "@gauf/packer";
-import Transport from "@gauf/transport";
-import TransportFactory, { Settings as TransportFactorySettings } from "@gauf/transport/factory";
-import TransportNetworkDuplex from "@gauf/transport/network/duplex";
+import { Transport, TransportNetworkDuplex } from "@gauf/transport";
+import TransportFactory from "@gauf/transport/factory";
 
 export type Metric = {
   name: string;
@@ -18,7 +17,7 @@ export type Payload = any;
 export type Settings = {
   heartbeat?: number;
   collector?: CollectorSettings;
-  transport?: TransportFactorySettings;
+  transport?: object;
   packer?: Packer<any>;
 };
 
@@ -96,7 +95,7 @@ export default class Tracker {
     return new Collector(listener, settings);
   }
 
-  protected createTransport(url: string, settings?: TransportFactorySettings) {
+  protected createTransport(url: string, settings?: object) {
     const factory = new TransportFactory();
     return factory.createTransport(url, settings);
   }

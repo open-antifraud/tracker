@@ -1,5 +1,5 @@
 import { Packed, Packer } from "@gauf/packer";
-import TransportNetwork from "@gauf/transport/network";
+import { TransportNetwork } from "@gauf/transport";
 
 type Data =
   string | Document | Blob | ArrayBufferView | ArrayBuffer | FormData | URLSearchParams |
@@ -10,7 +10,7 @@ type Header = {
   value: string,
 };
 
-type Settings = {
+export type Settings = {
   headers: Header[],
   timeout: number,
 };
