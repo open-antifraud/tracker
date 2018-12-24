@@ -1,7 +1,7 @@
-import Collector, { Settings as CollectorSettings } from "@gauf/collector";
-import { Packed, Packer } from "@gauf/packer";
-import { Transport, TransportNetworkDuplex } from "@gauf/transport";
-import TransportFactory from "@gauf/transport/factory";
+import Collector, { Settings as CollectorSettings } from "@gauf/tracker/collector";
+import { Packed, Packer } from "@gauf/tracker/packer";
+import { Transport, TransportNetworkDuplex } from "@gauf/tracker/transport";
+import TransportFactory from "@gauf/tracker/transport/factory";
 
 export type Metric = {
   name: string;

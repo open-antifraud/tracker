@@ -1,4 +1,4 @@
-import MetricEmitter, { Listener } from "@gauf/emitter";
+import MetricEmitter, { Listener } from "@gauf/tracker/emitter";
 
 const metrics = [
   "userAgent",

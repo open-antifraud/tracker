@@ -1,7 +1,7 @@
 /* tslint:disable:no-console */
 
-import Emitter from "@gauf/emitter";
 import Tracker from "@gauf/tracker";
+import Emitter from "@gauf/tracker/emitter";
 
 class MetricCustomEmitter extends Emitter {
   protected static emitter: string = "custom";

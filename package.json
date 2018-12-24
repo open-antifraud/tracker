@@ -42,7 +42,8 @@
       "js"
     ],
     "moduleNameMapper": {
-      "^@gauf/(.*)$": "<rootDir>/lib/$1"
+      "^@gauf/tracker$": "<rootDir>/lib/tracker",
+      "^@gauf/tracker/(.*)$": "<rootDir>/lib/$1"
     },
     "coveragePathIgnorePatterns": [
       "/node_modules/",

@@ -1,5 +1,5 @@
-import { Packed, Packer } from "@gauf/packer";
-import { Callback, TransportNetworkDuplex } from "@gauf/transport";
+import { Packed, Packer } from "@gauf/tracker/packer";
+import { Callback, TransportNetworkDuplex } from "@gauf/tracker/transport";
 
 type Data = string | Blob | ArrayBuffer | ArrayBufferView;
 

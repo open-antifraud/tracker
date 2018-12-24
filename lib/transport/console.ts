@@ -1,5 +1,5 @@
-import { Packed } from "@gauf/packer";
-import { Transport } from "@gauf/transport";
+import { Packed } from "@gauf/tracker/packer";
+import { Transport } from "@gauf/tracker/transport";
 
 export default class TransportConsole extends Transport {
   public send(data: Packed<any>) {

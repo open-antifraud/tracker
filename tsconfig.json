@@ -10,7 +10,8 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@gauf/*": ["./lib/*"]
+      "@gauf/tracker": ["./lib/tracker"],
+      "@gauf/tracker/*": ["./lib/*"]
     }
   }
 }

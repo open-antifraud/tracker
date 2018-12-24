@@ -1,11 +1,11 @@
-import Emitter, { Listener } from "@gauf/emitter";
+import Emitter, { Listener } from "@gauf/tracker/emitter";
 import {
   extractDeviceOrientation,
   extractMousePosition,
   Extractor,
   extractWindowScroll,
   extractWindowSize,
-} from "@gauf/emitters/extractors/behavior";
+} from "@gauf/tracker/emitters/extractors/behavior";
 
 export type Settings = {
   metrics?: string[];

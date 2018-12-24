@@ -1,8 +1,8 @@
-import { Transport } from "@gauf/transport";
-import TransportConsole from "@gauf/transport/console";
-import TransportHttpAjax, { Settings as SettingsAjax } from "@gauf/transport/http/ajax";
-import TransportHttpBeacon from "@gauf/transport/http/beacon";
-import TransportWebsocket from "@gauf/transport/websocket";
+import { Transport } from "@gauf/tracker/transport";
+import TransportConsole from "@gauf/tracker/transport/console";
+import TransportHttpAjax, { Settings as SettingsAjax } from "@gauf/tracker/transport/http/ajax";
+import TransportHttpBeacon from "@gauf/tracker/transport/http/beacon";
+import TransportWebsocket from "@gauf/tracker/transport/websocket";
 
 const extractProtocolFromURL = (url: string): string | undefined => {
   if (/^http[s]?:\/\//.test(url)) {
