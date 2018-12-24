@@ -2,6 +2,7 @@
   "name": "@gauf/tracker",
   "version": "1.0.0",
   "main": "lib/tracker.ts",
+  "description": "Tracker",
   "homepage": "https://github.com/open-antifraud/tracker#readme",
   "scripts": {
     "build": "rollup --config ./rollup.config.js",
