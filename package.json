@@ -1,8 +1,7 @@
 {
   "name": "@gauf/tracker",
   "version": "1.0.0",
-  "main": "build/main.js",
-  "typings": "build/main.d.ts",
+  "main": "lib/tracker.ts",
   "scripts": {
     "build": "rollup --config ./rollup.config.js",
     "lint": "tslint --project tslint.json",
@@ -37,9 +36,6 @@
     },
     "testEnvironment": "jsdom",
     "testRegex": "tests\\/.*\\.(test|spec)\\.(ts|tsx|js)$",
-    "setupFiles": [
-      "./tests/runtime.ts"
-    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
