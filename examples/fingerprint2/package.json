@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "fingerprintjs2": "^1.8.6",
-    "@gauf/tracker": "file:../../"
+    "@gauf/tracker": "^1.2.0"
   },
   "devDependencies": {
     "parcel-bundler": "^1.11.0",
