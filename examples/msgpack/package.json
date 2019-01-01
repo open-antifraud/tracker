@@ -3,8 +3,8 @@
   "main": "src/index.js",
   "private": true,
   "scripts": {
-    "dev": "parcel src/index.js",
-    "build": "parcel build src/index.js"
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html"
   },
   "dependencies": {
     "@gauf/tracker": "latest",
