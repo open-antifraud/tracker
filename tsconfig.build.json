@@ -1,6 +1,5 @@
 {
   "extends": "./tsconfig",
-  "outDir": "./build",
   "include": [
     "lib"
   ]
