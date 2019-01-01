@@ -46,7 +46,7 @@ describe("Tracker", () => {
 
     expect(console.log).toBeCalledTimes(trackers.length);
 
-    trackers.forEach((tracker, userId) =>
+    trackers.forEach((_, userId) =>
       expect(console.log).toHaveBeenNthCalledWith(userId + 1, expect.objectContaining({
         metrics: expect.any(Array),
         payload: expect.objectContaining({ userId }),
