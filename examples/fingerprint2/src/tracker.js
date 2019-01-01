@@ -1,24 +1,23 @@
-import Tracker from '@gauf/tracker';
-import Emitter from '@gauf/emitter';
+import Tracker, { MetricEmitter } from '@gauf/tracker';
+import Fingerprint from 'fingerprintjs2';
 
-class MetricCustomEmitter extends Emitter {
+const fingerprint = new Fingerprint()
+
+class MetricCustomEmitter extends MetricEmitter {
   collect(callback) {
-    Fingerprint2.get((metrics) => {
-      this.emit('fp2', metrics)
+    fingerprint.get((hash, metrics) => {
+      this.emit('fp2', { hash, metrics })
       callback && callback()
     })
   }
-
   collectWithInterval() {
-    this.timerId = window.setTimeout(() =>
+    this.timerId = window.setTimeout(() => {
       this.collect(() => this.collectWithInterval())
-    , 1000)
+    }, 1000)
   }
-
   activate() {
     this.collectWithInterval()
   }
-
   deactivate() {
     if (this.timerId) {
       window.clearTimeout(this.timerId);
@@ -26,12 +25,12 @@ class MetricCustomEmitter extends Emitter {
   }
 }
 
-MetricCustomEmitter.key = "fingerprint2"
+MetricCustomEmitter.key = "fingerprintjs2";
 
 const tracker = new Tracker('console://my-receive-service', {
   collector: {
     emitters: [
-      MetricCustomEmitter
+     MetricCustomEmitter
     ]
   }
 })
