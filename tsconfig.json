@@ -8,7 +8,11 @@
     "strict": true,
     "composite": true,
     "esModuleInterop": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "baseUrl": ".",
+    "outDir": "./build",
     "paths": {
       "@gauf/tracker": ["./lib/tracker"],
       "@gauf/tracker/*": ["./lib/*"]
