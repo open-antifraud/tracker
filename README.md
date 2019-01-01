@@ -1,5 +1,6 @@
 Gauf Tracker
 ============
+[![npm version](https://badge.fury.io/js/%40gauf%2Ftracker.svg)](https://badge.fury.io/js/%40gauf%2Ftracker)
 [![Build Status](https://travis-ci.com/open-antifraud/tracker.svg?branch=master)](https://travis-ci.com/open-antifraud/tracker) [![Coverage Status](https://coveralls.io/repos/github/open-antifraud/tracker/badge.svg?branch=master)](https://coveralls.io/github/open-antifraud/tracker?branch=master)
 
 Browser tracker with perfect customization
