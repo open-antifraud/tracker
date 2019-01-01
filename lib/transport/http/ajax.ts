@@ -36,8 +36,8 @@ export default class TransportHttpAjax extends TransportNetwork {
 
     xhr.timeout = timeout;
     xhr.open("POST", this.url);
-    xhr.onerror = (e) => console.log(xhr.statusText); // tslint:disable-line:no-console
-    xhr.ontimeout = (e) => console.log(xhr.statusText); // tslint:disable-line:no-console
+    xhr.onerror = () => console.log(xhr.statusText); // tslint:disable-line:no-console
+    xhr.ontimeout = () => console.log(xhr.statusText); // tslint:disable-line:no-console
 
     headers.forEach(({ header, value }) => (
       xhr.setRequestHeader(header, value)
