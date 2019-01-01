@@ -2,10 +2,9 @@ import Tracker from '@gauf/tracker';
 
 class CustomTracker extends Tracker {
   constructor(token, settings) {
-    super(
-      'console://reciever.service.com/client/{token}'.replace('{token}', token),
-      settings
-    )
+    const url = 'console://reciever.service.com/client/{token}'.replace('{token}', token)
+    console.log('Custom Tracker with URL', url);
+    super(url, settings)
   }
 }
 
