@@ -1,0 +1,16 @@
+{
+  "name": "gauf-tracker-example-tokens",
+  "main": "src/index.js",
+  "private": true,
+  "scripts": {
+    "dev": "parcel src/index.js",
+    "build": "parcel build src/index.js"
+  },
+  "dependencies": {
+    "@gauf/tracker": "file:../../"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.11.0",
+    "parcel-plugin-typescript": "^1.0.0"
+  }
+}
