@@ -2,6 +2,7 @@ import Collector, { Settings as CollectorSettings } from "@gauf/tracker/collecto
 import { Packed, Packer } from "@gauf/tracker/packer";
 import { Transport, TransportNetworkDuplex } from "@gauf/tracker/transport";
 import TransportFactory from "@gauf/tracker/transport/factory";
+export { default as MetricEmitter } from "@gauf/tracker/emitter";
 
 export type Metric = {
   name: string;
