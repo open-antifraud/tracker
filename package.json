@@ -1,9 +1,17 @@
 {
   "name": "@gauf/tracker",
   "version": "1.1.0",
+  "description": "Browser tracker with perfect customization",
   "main": "lib/tracker.ts",
-  "description": "Tracker",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/open-antifraud/tracker.git"
+  },
+  "keywords": ["tracker", "privacy"],
   "homepage": "https://github.com/open-antifraud/tracker#readme",
+  "bugs": {
+    "url": "https://github.com/open-antifraud/tracker/issues"
+  },
   "scripts": {
     "build": "rollup --config ./rollup.config.js",
     "lint": "tslint --project tslint.json",
@@ -15,14 +23,15 @@
   },
   "dependencies": {
     "@types/node": "^10.12.18",
-    "rollup": "^0.68.1",
+    "fingerprintjs2": "^1.8.6",
+    "rollup": "^1.0.0",
     "rollup-plugin-typescript2": "^0.18.1",
     "rollup-plugin-uglify": "^6.0.0",
     "tslint": "^5.12.0",
     "typescript": "^3.2.2"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.10",
+    "@types/jest": "^23.3.11",
     "coveralls": "^3.0.2",
     "jest": "^23.6.0",
     "jest-config": "^23.6.0",
