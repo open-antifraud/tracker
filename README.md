@@ -2,103 +2,65 @@ Gauf Tracker
 ============
 [![Build Status](https://travis-ci.com/open-antifraud/tracker.svg?branch=master)](https://travis-ci.com/open-antifraud/tracker) [![Coverage Status](https://coveralls.io/repos/github/open-antifraud/tracker/badge.svg?branch=master)](https://coveralls.io/github/open-antifraud/tracker?branch=master)
 
-@TODO
+Browser tracker with perfect customization
+
+## Installation
+
+```bash
+npm install @gauf/tracker --save
+```
+
+## Usage
+
+```javascript
+import Tracker from '@gauf/tracker';
+
+const tracker = new Tracker('http://receive.service', {
+  heartbeat: 10000,
+  collector: {
+    settings: {
+
+    }
+  }
+});
+
+tracker.activate({ userId: 1 });
+```
+
+### URL
+
+Examples:
+
+* `console://debug-receiver`
+* `https://receive.service`
+* `http://receive.service`
+* `wws://receive.service`
+* `ws://receive.service`
+
+Tracker detect transport according URL parameter
 
 ### Settings
-  transport?: object;
-  packer?: Packer<any>;
 
-**heartbeat**
-  type: `number`
-  required: `false`
-  default: `5000`
-
-**collector**
-  type: `object`
-  required: `false`,
-  value:
 ```
-{
+heartbeat?: number;
+collector?: {
   emitters?: InterfaceEmitterConstructor[];
   settings?: {
     [key: string]: object,
   }
-}
+};
+transport?: object;
+packer?: Packer<any>;
 ```
 
-**heartbeat**
-  type: `object` (depend on detected transport)
-  required: `false`
+* **heartbeat** - how often to send metrics, default: `5000` microseconds
+* **collector** - class array of metric emitters, with settings of each
+* **transport** - transport settings for detected transport
+* **packer** - packer function, default: `JSON.stringify`
 
-**packer**
-  type: `(metrics: Metrics) => any`
-  required: `false`
-  default: `JSON.stringify` when `websocket` or `http` transport set
+## Examples
 
-### Usage example
+* [Use `fingeprint2` as custom metric emitter](./examples/fingerprint2/)
+* [Use `msgpack` as custom packer](./examples/msgpack/)
+* [Custom tracker with tokens support](./examples/tokens/)
 
-1. Minimal
-
-```javascript
-import Tracker from '@gauf/tracker';
-
-const tracker = new Tracker('http://my-receive-service')
-
-tracker.activate({ userId: 1 })
-```
-
-2. Custom packer
-
-```javascript
-import Tracker from '@gauf/tracker';
-import * as msgpack from "msgpack-lite";
-
-const tracker = new Tracker('http://my-receive-service', {
-  packer: msgpack.encode
-})
-
-tracker.activate({ userId: 1 })
-```
-
-3. Custom metric emitters
-
-
-Create `MetricCustomEmitter.js`:
-
-```javascript
-import Emitter from '@gauf/emitter';
-
-export default class MetricCustomEmitter extends Emitter {
-  protected static emitter: string = "custom";
-  protected interval?: number;
-
-  public activate() {
-    this.interval = window.setInterval(() =>
-      this.emit('random', Math.random())
-    , 300)
-  }
-
-  public deactivate() {
-    if (this.interval) {
-      window.clearTimeout(this.interval);
-    }
-  }
-}
-```
-
-Initialize tracker with custom metric emitter
-
-```javascript
-import Tracker from '@gauf/tracker';
-import MetricCustomEmitter from './MetricCustomEmitter';
-
-const tracker = new Tracker('http://my-receive-service', {
-  collector: {
-    emitters: [
-      MetricCustomEmitter
-    ]
-  }
-})
-
-tracker.activate({ userId: 1 })
-```
