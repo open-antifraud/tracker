@@ -1,17 +1,10 @@
 import Emitter, { Listener } from "@gauf/tracker/emitter";
-import {
-  extractDeviceOrientation,
-  extractMousePosition,
-  Extractor,
-  extractWindowScroll,
-  extractWindowSize,
-} from "@gauf/tracker/emitters/extractors/behavior";
 
 export type Settings = {
   metrics?: string[];
 };
 
-export type MetricSourceListener = {
+type MetricSourceListener = {
   listener: {
     handler: (event: Event) => void,
     useCapture?: boolean,
@@ -19,17 +12,72 @@ export type MetricSourceListener = {
   name: string;
 };
 
-export type MetricSourceListeners = MetricSourceListener[];
+type MetricSourceListeners = MetricSourceListener[];
 
-export type MetricSource = {
+type MetricSource = {
   event: string;
   extractor?: Extractor;
   useCapture?: boolean;
 };
 
-export type MetricSources = MetricSource[];
+type MetricSources = MetricSource[];
 
-export const metricSources: MetricSources = [
+type Extractor = (event: any) => object;
+
+type Size = {
+  readonly width: number;
+  readonly height: number;
+};
+
+type Position = {
+  readonly x: number;
+  readonly y: number;
+};
+
+type DeviceOrientation = {
+  readonly absolute: boolean;
+  readonly alpha: number | null;
+  readonly beta: number | null;
+  readonly gamma: number | null;
+};
+
+const getWindowSize = (): Size => ({
+  height: window.document.body.clientHeight,
+  width: window.document.body.clientWidth,
+});
+
+const getScrollPosition = (): Position => ({
+  x: window.scrollX,
+  y: window.scrollY,
+});
+
+const extractWindowSize: Extractor = () => getWindowSize();
+const extractWindowScroll: Extractor = () => getScrollPosition();
+
+const extractMousePosition: Extractor = (event: MouseEvent) => {
+  const { clientX: x, clientY: y } = event;
+  const size = getWindowSize();
+  const scroll = getScrollPosition();
+
+  const outside =
+    x < scroll.x ||
+    x > scroll.x + size.width ||
+    y < scroll.y ||
+    y > scroll.y + size.height;
+
+  return { x, y, outside };
+};
+
+const extractDeviceOrientation: Extractor = (event: DeviceOrientationEvent): DeviceOrientation => {
+  return {
+    absolute: event.absolute,
+    alpha: event.alpha,
+    beta: event.beta,
+    gamma: event.gamma,
+  };
+};
+
+const metricSources: MetricSources = [
   { event: "keydown", useCapture: true },
   { event: "click", extractor: extractMousePosition, useCapture: true },
   { event: "mousemove", extractor: extractMousePosition, useCapture: true },

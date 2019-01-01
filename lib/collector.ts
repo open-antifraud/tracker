@@ -1,6 +1,6 @@
 import Emitter, { InterfaceEmitter, InterfaceEmitterConstructor, Listener } from "@gauf/tracker/emitter";
-import MetricBehaviorEmitter from "@gauf/tracker/emitters/behavior";
-import MetricNavigatorEmitter from "@gauf/tracker/emitters/navigator";
+import MetricBehaviorEmitter from "@gauf/tracker/metrics/behavior";
+import MetricNavigatorEmitter from "@gauf/tracker/metrics/navigator";
 
 export type Settings = {
   emitters?: InterfaceEmitterConstructor[];
