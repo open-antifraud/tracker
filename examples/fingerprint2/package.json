@@ -7,8 +7,8 @@
     "build": "parcel build src/index.js"
   },
   "dependencies": {
-    "fingerprintjs2": "^1.8.6",
-    "@gauf/tracker": "@latest"
+    "@gauf/tracker": "latest",
+    "fingerprintjs2": "^1.8.6"
   },
   "devDependencies": {
     "parcel-bundler": "^1.11.0",
