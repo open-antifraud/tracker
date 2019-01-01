@@ -1,5 +1,3 @@
-/* tslint:disable:no-console */
-
 import Tracker from "@gauf/tracker";
 
 class CustomTokenTracker extends Tracker {
