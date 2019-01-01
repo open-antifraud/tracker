@@ -24,7 +24,7 @@ class MetricCustomEmitter extends Emitter {
   }
 }
 
-const tracker = new Tracker('http://my-receive-service', {
+const tracker = new Tracker('console://my-receive-service', {
   collector: {
     emitters: [
       MetricCustomEmitter

@@ -1,7 +1,7 @@
 import Tracker from '@gauf/tracker';
 import * as msgpack from "msgpack-lite";
 
-const tracker = new Tracker('http://my-receive-service', {
+const tracker = new Tracker('console://my-receive-service', {
   packer: msgpack.encode
 })
 
