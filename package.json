@@ -2,7 +2,7 @@
   "name": "@gauf/tracker",
   "version": "1.3.1",
   "description": "Browser tracker with perfect customization",
-  "main": "lib/tracker.ts",
+  "main": "build/tracker.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/open-antifraud/tracker.git"
