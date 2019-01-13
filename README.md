@@ -13,17 +13,12 @@ npm install @gauf/tracker --save
 
 ## Usage
 
+There's a minimal example of tracker usage:
+
 ```javascript
 import Tracker from '@gauf/tracker';
 
-const tracker = new Tracker('http://receive.service', {
-  heartbeat: 10000,
-  collector: {
-    settings: {
-
-    }
-  }
-});
+const tracker = new Tracker('http://receive.service');
 
 tracker.activate({ userId: 1 });
 ```
